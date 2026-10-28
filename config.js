@@ -4,9 +4,11 @@
 //
 // Пока apiKey пустой, сайт работает в демо-режиме: всё хранится только в этом браузере.
 export const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  databaseURL: '',   // https://<проект>-default-rtdb.europe-west1.firebasedatabase.app
-  projectId: '',
-  appId: '',
+  apiKey: 'AIzaSyCbLBgyW_Bd12pdjAzF_qtXdpQOYF9EkUg',
+  authDomain: 'afod-sheets.firebaseapp.com',
+  databaseURL: 'https://afod-sheets-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'afod-sheets',
+  storageBucket: 'afod-sheets.firebasestorage.app',
+  messagingSenderId: '142480069623',
+  appId: '1:142480069623:web:afc1e61a74979350f954f2',
 };
