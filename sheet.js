@@ -1,5 +1,8 @@
 import { roomFromUrl, openRoom, isDemo } from './store.js';
-import { PLAYBOOKS, POSSE, playbookLayout, posseLayout } from './layouts.js';
+import { PLAYBOOKS, posseInfo, playbookLayout, posseLayout } from './layouts.js';
+import { t, applyI18n } from './i18n.js';
+
+applyI18n();
 
 const S = 1.5;               // пункты PDF → пиксели листа
 const INK = '#141414';
@@ -9,7 +12,7 @@ const id = new URLSearchParams(location.search).get('id') || '';
 const sheetEl = $('sheet');
 const DEBUG = new URLSearchParams(location.search).has('debug');
 
-let txt = {}, s = {}, meta = null, layout = null;
+let txt = {}, s = {}, meta = null, layout = null, builtKey = '';
 const markEls = [], fieldEls = new Map(), pending = new Map();
 
 function status(text, cls) { $('st').textContent = text; $('dot').className = 'dot ' + (cls || ''); }
@@ -18,11 +21,11 @@ function toast(t) { const d = document.createElement('div'); d.className = 'toas
 // Картинку листа начинаем грузить сразу, не дожидаясь Firebase
 {
   const pb = new URLSearchParams(location.search).get('pb');
-  const src = pb === 'posse' ? POSSE.img : PLAYBOOKS[pb]?.img;
+  const src = pb?.startsWith('posse') ? posseInfo(pb.slice(6)).img : PLAYBOOKS[pb]?.img;
   if (src) new Image().src = src;
 }
 
-if (!room || !/^[a-z0-9]{1,32}$/.test(id)) { status('В ссылке нет стола или листа', 'bad'); throw new Error('bad url'); }
+if (!room || !/^[a-z0-9]{1,32}$/.test(id)) { status(t('badUrl'), 'bad'); throw new Error('bad url'); }
 $('back').href = 'index.html?room=' + room;
 
 // ---------- Масштаб под ширину экрана ----------
@@ -54,7 +57,7 @@ function build() {
     const d = document.createElement('div');
     d.className = 'mk';
     Object.assign(d.style, { left: (m.x - m.w / 2) * S + 'px', top: (m.y - m.h / 2) * S + 'px', width: m.w * S + 'px', height: m.h * S + 'px' });
-    if (m.tip) d.title = m.tip;
+    if (m.tip) d.title = (m.tip === 'friend' || m.tip === 'rival') ? t(m.tip) : m.tip;
     if (DEBUG) d.style.outline = '1px solid rgba(230,0,0,.8)';
     d.addEventListener('click', () => onMark(m));
     sheetEl.append(d); markEls.push([m, d]);
@@ -96,9 +99,9 @@ function paintFields() {
 // ---------- Правки ----------
 let api;
 function save(obj) {
-  status('Сохраняю…', 'warn');
-  api.patch(id, obj).then(() => status(isDemo ? 'Демо-режим: только этот браузер' : 'Сохранено', isDemo ? 'warn' : 'ok'))
-    .catch(e => { console.error(e); status('Не сохранилось. Проверьте связь и повторите.', 'bad'); });
+  status(t('saving'), 'warn');
+  api.patch(id, obj).then(() => status(isDemo ? t('demoStatus') : t('saved'), isDemo ? 'warn' : 'ok'))
+    .catch(e => { console.error(e); status(t('saveFail'), 'bad'); });
 }
 
 function onMark(m) {
@@ -119,7 +122,7 @@ function onText(k, v) {
 }
 
 // ---------- Экспорт / импорт / печать ----------
-const sheetName = () => meta?.kind === 'posse' ? 'afod-posse-bounty' : 'afod-' + meta?.playbook + '-v2';
+const sheetName = () => meta?.kind === 'posse' ? 'afod-posse-' + (meta.posseType || 'bounty') : 'afod-' + meta?.playbook + '-v2';
 $('exp').onclick = () => {
   const data = JSON.stringify({ sheet: sheetName(), playbook: meta?.playbook, txt, s }, null, 2);
   const a = document.createElement('a');
@@ -134,13 +137,13 @@ $('file').onchange = e => {
   rd.onload = async () => {
     try {
       const d = JSON.parse(rd.result);
-      if (d.sheet && d.sheet !== sheetName() && !confirm(`Файл от другого листа (${d.sheet}). Всё равно загрузить?`)) return;
-      if (!confirm('Заменить содержимое этого листа данными из файла?')) return;
+      if (d.sheet && d.sheet !== sheetName() && !confirm(t('otherSheet', d.sheet))) return;
+      if (!confirm(t('replaceSheet'))) return;
       txt = d.txt || {}; s = d.s || {};
       paintAll(); fieldEls.forEach((inp, k) => inp.value = txt[k] || '');
       await api.patch(id, { txt, s });
-      toast('Лист загружен из файла');
-    } catch (err) { toast('Не удалось прочитать файл: это не JSON листа'); }
+      toast(t('loaded'));
+    } catch (err) { toast(t('badFile')); }
   };
   rd.readAsText(f); e.target.value = '';
 };
@@ -149,21 +152,26 @@ $('prn').onclick = () => print();
 // ---------- Подключение ----------
 try {
   api = await openRoom(room);
-  api.onConnection(c => { if (!c) status('Нет связи, правки уйдут при восстановлении', 'bad'); else if (!pending.size) status(isDemo ? 'Демо-режим: только этот браузер' : 'На связи', isDemo ? 'warn' : 'ok'); });
+  api.onConnection(c => { if (!c) status(t('offline'), 'bad'); else if (!pending.size) status(isDemo ? t('demoStatus') : t('online'), isDemo ? 'warn' : 'ok'); });
   api.watchSheet(id, v => {
-    if (!v) { status('Такого листа нет: возможно, его удалили', 'bad'); sheetEl.textContent = ''; layout = null; return; }
-    if (!layout) {
-      meta = v;
-      if (v.kind === 'posse') { layout = posseLayout(); document.title = (v.txt?.name || POSSE.title) + ' — банда'; }
-      else if (PLAYBOOKS[v.playbook]) { layout = playbookLayout(v.playbook); }
-      else { status('Неизвестный плейбук: ' + v.playbook, 'bad'); return; }
+    if (!v) { status(t('noSheet'), 'bad'); sheetEl.textContent = ''; layout = null; return; }
+    // Лист банды перестраивается, если на столе сменили тип банды
+    const key = v.kind === 'posse' ? 'posse:' + (v.posseType || 'bounty') : 'pc:' + v.playbook;
+    if (!layout || key !== builtKey) {
+      meta = v; builtKey = key;
+      markEls.length = 0; fieldEls.clear();
+      if (v.kind === 'posse') layout = posseLayout(v.posseType);
+      else if (PLAYBOOKS[v.playbook]) layout = playbookLayout(v.playbook);
+      else { status(t('unknownPb') + v.playbook, 'bad'); return; }
       build();
     }
+    meta = v;
     txt = { ...(v.txt || {}) }; pending.forEach((_, k) => { const inp = fieldEls.get(k); if (inp) txt[k] = inp.value; });
     s = { ...(v.s || {}) };
-    if (v.kind === 'pc') document.title = (txt.name || 'Без имени') + ' — ' + PLAYBOOKS[v.playbook].title;
+    document.title = v.kind === 'pc' ? (txt.name || t('unnamed')) + ' — ' + PLAYBOOKS[v.playbook].title
+      : (txt.name || posseInfo(v.posseType).title) + t('posseSuffix');
     paintAll(); paintFields();
-  }, e => { console.error(e); status('Нет доступа к базе. Проверьте правила Firebase.', 'bad'); });
+  }, e => { console.error(e); status(t('noAccess'), 'bad'); });
 } catch (e) {
-  console.error(e); status('Не удалось подключиться к Firebase: ' + (e.message || e), 'bad');
+  console.error(e); status(t('fbFail') + (e.message || e), 'bad');
 }

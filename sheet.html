@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Лист — A Fistful of Darkness</title>
+<title>A Fistful of Darkness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Old+Standard+TT&family=Anton&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="bar">
-  <a class="btn ghost" id="back" href="index.html">← Все листы</a>
-  <span class="status"><span class="dot" id="dot"></span><span id="st">Подключаюсь…</span></span>
+  <a class="btn ghost" id="back" href="index.html" data-i18n="back"></a>
+  <span class="status"><span class="dot" id="dot"></span><span id="st" data-i18n="connecting"></span></span>
   <span class="sp"></span>
-  <button id="exp">Экспорт</button>
-  <button id="imp">Импорт</button>
-  <button id="prn" class="ghost">Печать / PDF</button>
+  <button id="exp" data-i18n="export"></button>
+  <button id="imp" data-i18n="import"></button>
+  <button id="prn" class="ghost" data-i18n="print"></button>
+  <button id="lang" class="ghost"></button>
   <input type="file" id="file" accept=".json,application/json" hidden>
 </div>
 <div class="stage"><div class="fit" id="fit"><div class="sheet" id="sheet"></div></div></div>

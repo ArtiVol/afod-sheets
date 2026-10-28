@@ -66,3 +66,5 @@ h2{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:.06e
   @page{size:1263px 893px;margin:0}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.row select{font-family:var(--type);font-size:13px;padding:5px 6px;background:var(--bg);color:var(--paper);border:1px solid var(--line);max-width:46vw}
+.mast .share{align-items:center}

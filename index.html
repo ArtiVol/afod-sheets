@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>A Fistful of Darkness — листы</title>
+<title>A Fistful of Darkness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Old+Standard+TT&family=Anton&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -11,29 +11,35 @@
 <body>
 <div class="wrap">
   <header class="mast">
-    <h1>A Fistful of Darkness<small id="sub">Листы персонажей и банды</small></h1>
-    <div class="share" id="share" hidden>
-      <input id="link" readonly aria-label="Ссылка на стол">
-      <button id="copy">Копировать ссылку</button>
+    <h1>A Fistful of Darkness<small data-i18n="subtitle"></small></h1>
+    <div class="share">
+      <span id="shareBox" class="share" hidden>
+        <input id="link" readonly data-i18n-aria="tableLink">
+        <button id="copy" data-i18n="copy"></button>
+      </span>
+      <button id="lang" class="ghost"></button>
     </div>
   </header>
-  <div class="banner" id="demo" hidden>Демо-режим: Firebase ещё не подключён, листы хранятся только в этом браузере. Впишите конфиг в js/config.js.</div>
+  <div class="banner" id="demo" hidden data-i18n="demo"></div>
 
   <section class="hero" id="noroom" hidden>
-    <p class="note">Стол — это общая папка с листами. Создайте его один раз и отправьте ссылку игрокам: открыв её, они увидят все листы и смогут их править. Аккаунт не нужен.</p>
-    <button id="create">Создать стол</button>
+    <p class="note" data-i18n="intro"></p>
+    <div class="new">
+      <select id="ptype" data-i18n-aria="posseType"></select>
+      <button id="create" data-i18n="create"></button>
+    </div>
   </section>
 
   <main id="room" hidden>
-    <h2>Банда</h2>
+    <h2 data-i18n="posse"></h2>
     <div class="list" id="posse"></div>
-    <h2>Персонажи</h2>
+    <h2 data-i18n="characters"></h2>
     <div class="list" id="pcs"></div>
     <div class="new">
-      <select id="pb" aria-label="Плейбук"></select>
-      <button id="add">Новый персонаж</button>
+      <select id="pb" data-i18n-aria="playbook"></select>
+      <button id="add" data-i18n="newPc"></button>
     </div>
-    <p class="note" style="margin-top:28px">Править может любой, у кого есть ссылка. Перед большими правками полезно сохранить лист кнопкой «Экспорт» на его странице.</p>
+    <p class="note" style="margin-top:28px" data-i18n="footNote"></p>
   </main>
 </div>
 <script type="module" src="index.js"></script>

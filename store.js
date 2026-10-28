@@ -73,9 +73,9 @@ export async function openRoom(room) {
   };
 }
 
-export async function createRoom() {
+export async function createRoom(posseType) {
   const room = newId(12);
   const api = await openRoom(room);
-  await api.put('posse', { kind: 'posse', txt: {}, s: {}, createdAt: Date.now() });
+  await api.put('posse', { kind: 'posse', posseType, txt: {}, s: {}, createdAt: Date.now() });
   return room;
 }

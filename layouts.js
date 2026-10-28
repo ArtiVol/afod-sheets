@@ -20,7 +20,19 @@ export const PLAYBOOKS = {
   revenant:     { title: 'The Revenant',      img: 'revenant.webp' },
 };
 
-export const POSSE = { title: 'Bounty Hunters', img: 'bounty.webp' };
+// Типы банд. Отличаются спецспособностями (y кружков), ветераном и образом действий (modus)
+export const POSSES = {
+  hellstone: { title: 'Hellstone Scavengers', img: 'hellstone.webp', ab: [96,124,152,180,232,272,312], vet: 340,
+    modus: [['Scavenge',472.0,516.6],['Mining',525.6,559.4],['Supply',568.3,598.5],['Sale',607.5,627.7]] },
+  outlaw:    { title: 'Outlaw Posse', img: 'outlawposse.webp', ab: [96,124,176,204,232,260,300], vet: 328,
+    modus: [['Intimidation',431.8,491.8],['Superiority',502.6,555.8],['Swiftness',566.6,611.7],['Spectacle',622.5,668.1]] },
+  bounty:    { title: 'Bounty Hunters', img: 'bounty.webp', ab: [96,124,176,216,256,284,312], vet: 340,
+    modus: [['Violence',440.5,483.6],['Negotiation',494.6,554.8],['Connection',565.8,624.9],['Trap',635.8,657.2]] },
+  tribe:     { title: 'Tribe', img: 'tribe.webp', ab: [96,121,170,207,244,281,318], vet: 379,
+    modus: [['Show of Force',438.4,506.6],['Swiftness',517.6,564.1],['Social',575.0,605.5],['Sacrifice',616.4,659.3]] },
+};
+export const DEFAULT_POSSE = 'bounty';
+export const posseInfo = type => POSSES[type] || POSSES[DEFAULT_POSSE];
 
 // ---------- Плейбук: общая часть (перенесена из макета Claude Design) ----------
 
@@ -108,8 +120,8 @@ export function playbookLayout(pb) {
   D.ab.forEach((y,i) => m({k:'ab'+i, mode:'tog', kind:'fill', x:395.6, y, w:8, h:8}));
   [395.8,405.5,415.2].forEach((x,i) => m({k:'vet'+i, mode:'tog', kind:'fill', x, y:D.vet, w:8, h:8}));
   [431.2,443.2,455.2,467.2,479.2,491.2].slice(0, D.fr || 5).forEach((y,i) => {
-    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:393, y, w:9.5, h:9.5, tip:'друг'});
-    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:403, y, w:9.5, h:9.5, tip:'соперник'});
+    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:393, y, w:9.5, h:9.5, tip:'friend'});
+    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:403, y, w:9.5, h:9.5, tip:'rival'});
   });
   m({k:'armor', mode:'tog', kind:'box', x:293.4, y:305.8, w:6.6, h:6.6});
   m({k:'sarmor', mode:'tog', kind:'box', x:293.4, y:317.8, w:6.6, h:6.6});
@@ -131,7 +143,8 @@ export function playbookLayout(pb) {
 
 // ---------- Лист банды: Bounty Hunters ----------
 
-export function posseLayout() {
+export function posseLayout(type) {
+  const P = posseInfo(type);
   const marks = [], fields = [];
   const m = (o) => marks.push(o);
 
@@ -166,17 +179,16 @@ export function posseLayout() {
     .forEach((p,i) => m({k:'xp', i, mode:'lvl', kind:'fill', x:p[0], y:p[1], w:11, h:11}));
 
   // Спецспособности
-  [96,124,176,216,256,284,312].forEach((y,i) => m({k:'ab'+i, mode:'tog', kind:'fill', x:395.1, y, w:8, h:8}));
-  [395.1,404.6,414.2].forEach((x,i) => m({k:'vet'+i, mode:'tog', kind:'fill', x, y:340, w:8, h:8}));
+  P.ab.forEach((y,i) => m({k:'ab'+i, mode:'tog', kind:'fill', x:395.1, y, w:8, h:8}));
+  [395.1,404.6,414.2].forEach((x,i) => m({k:'vet'+i, mode:'tog', kind:'fill', x, y:P.vet, w:8, h:8}));
 
   // Образ действий
-  [['Violence',440.5,483.6],['Negotiation',494.6,554.8],['Connection',565.8,624.9],['Trap',635.8,657.2]]
-    .forEach(([w,a,b]) => m({k:'modus_'+w, mode:'tog', kind:'ring', x:(a+b)/2, y:400.2, w:b-a+4, h:10}));
+  P.modus.forEach(([w,a,b]) => m({k:'modus_'+w, mode:'tog', kind:'ring', x:(a+b)/2, y:400.2, w:b-a+4, h:10}));
 
   // Контакты: друг / соперник
   for (let i=0;i<6;i++) {
-    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:392.2, y:432.2+i*12, w:9.5, h:9.5, tip:'друг'});
-    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:402, y:432.2+i*12, w:9.5, h:9.5, tip:'соперник'});
+    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:392.2, y:432.2+i*12, w:9.5, h:9.5, tip:'friend'});
+    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:402, y:432.2+i*12, w:9.5, h:9.5, tip:'rival'});
   }
 
   // Улучшения, логово, качество, тренировки
@@ -202,5 +214,5 @@ export function posseLayout() {
   fields.push({k:'reputation', x:196.4, t:79.5, w:178, h:14, fs:12});
   fields.push({k:'hideout', x:14.2, t:119.5, w:360, h:14, fs:12});
 
-  return { img: POSSE.img, marks, fields };
+  return { img: P.img, marks, fields };
 }

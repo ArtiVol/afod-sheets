@@ -1,8 +1,10 @@
 import { isDemo, roomFromUrl, openRoom, createRoom, newId } from './store.js';
-import { PLAYBOOKS, POSSE } from './layouts.js';
+import { PLAYBOOKS, POSSES, DEFAULT_POSSE, posseInfo } from './layouts.js';
+import { t, applyI18n } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const room = roomFromUrl();
+applyI18n();
 $('demo').hidden = !isDemo;
 
 function el(tag, attrs = {}, ...kids) {
@@ -11,21 +13,27 @@ function el(tag, attrs = {}, ...kids) {
   kids.forEach(c => e.append(c));
   return e;
 }
+function posseOptions(select, current) {
+  select.textContent = '';
+  for (const [k, v] of Object.entries(POSSES)) select.append(el('option', { value: k, text: v.title }));
+  select.value = current;
+}
 
 if (!room) {
   $('noroom').hidden = false;
+  posseOptions($('ptype'), DEFAULT_POSSE);
   $('create').onclick = async () => {
-    $('create').disabled = true; $('create').textContent = 'Создаю…';
-    try { const r = await createRoom(); location.search = '?room=' + r; }
-    catch (e) { console.error(e); $('create').disabled = false; $('create').textContent = 'Создать стол'; alert('Не получилось создать стол: ' + (e.message || e)); }
+    $('create').disabled = true; $('create').textContent = t('creating');
+    try { const r = await createRoom($('ptype').value); location.search = '?room=' + r; }
+    catch (e) { console.error(e); $('create').disabled = false; $('create').textContent = t('create'); alert(t('createFail') + (e.message || e)); }
   };
 } else {
-  $('room').hidden = false; $('share').hidden = false;
+  $('room').hidden = false; $('shareBox').hidden = false;
   $('link').value = location.origin + location.pathname + '?room=' + room;
   $('copy').onclick = async () => {
-    try { await navigator.clipboard.writeText($('link').value); $('copy').textContent = 'Скопировано'; }
+    try { await navigator.clipboard.writeText($('link').value); $('copy').textContent = t('copied'); }
     catch { $('link').select(); }
-    setTimeout(() => $('copy').textContent = 'Копировать ссылку', 1500);
+    setTimeout(() => $('copy').textContent = t('copy'), 1500);
   };
   for (const [k, v] of Object.entries(PLAYBOOKS)) $('pb').append(el('option', { value: k, text: v.title }));
 
@@ -36,28 +44,34 @@ if (!room) {
     sheets = sheets || {};
     const posse = $('posse'); posse.textContent = '';
     const p = sheets.posse;
+    const type = p?.posseType || DEFAULT_POSSE;
+    const sel = el('select', { 'aria-label': t('posseType') });
+    posseOptions(sel, type);
+    sel.onchange = () => api.patch('posse', { posseType: sel.value });
     posse.append(el('div', { class: 'row posse' },
-      el('div', {}, el('a', { class: 'name', href: href('posse', 'posse'), text: p?.txt?.name || 'Банда без имени' }), el('div', { class: 'pb', text: POSSE.title })),
-      el('div')));
+      el('div', { style: 'min-width:0' },
+        el('a', { class: 'name', href: href('posse', 'posse-' + type), text: p?.txt?.name || t('unnamedPosse') }),
+        el('div', { class: 'pb', text: posseInfo(type).title })),
+      el('div', { class: 'actions' }, sel)));
 
     const pcs = $('pcs'); pcs.textContent = '';
     const list = Object.entries(sheets).filter(([id, s]) => id !== 'posse' && s?.kind === 'pc')
       .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
-    if (!list.length) pcs.append(el('div', { class: 'empty', text: 'Персонажей пока нет. Выберите плейбук и нажмите «Новый персонаж».' }));
+    if (!list.length) pcs.append(el('div', { class: 'empty', text: t('noPcs') }));
     list.forEach(([id, s]) => {
-      const del = el('button', { class: 'danger', type: 'button', text: 'Удалить' });
-      let armed = false, t;
+      const del = el('button', { class: 'danger', type: 'button', text: t('del') });
+      let armed = false, tm;
       del.onclick = async () => {
-        if (!armed) { armed = true; del.textContent = 'Точно удалить?'; t = setTimeout(() => { armed = false; del.textContent = 'Удалить'; }, 3000); return; }
-        clearTimeout(t); await api.put(id, null);
+        if (!armed) { armed = true; del.textContent = t('delSure'); tm = setTimeout(() => { armed = false; del.textContent = t('del'); }, 3000); return; }
+        clearTimeout(tm); await api.put(id, null);
       };
       pcs.append(el('div', { class: 'row' },
         el('div', { style: 'min-width:0' },
-          el('a', { class: 'name', href: href(id, s.playbook), text: s.txt?.name || 'Без имени' }),
+          el('a', { class: 'name', href: href(id, s.playbook), text: s.txt?.name || t('unnamed') }),
           el('div', { class: 'pb', text: PLAYBOOKS[s.playbook]?.title || s.playbook })),
         el('div', { class: 'actions' }, del)));
     });
-  }, e => { $('pcs').textContent = 'Нет доступа к базе: ' + (e.message || e); });
+  }, e => { $('pcs').textContent = t('noDb') + (e.message || e); });
 
   $('add').onclick = async () => {
     const id = newId(8), playbook = $('pb').value;
