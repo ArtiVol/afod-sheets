@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A Fistful of Darkness — листы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Old+Standard+TT&family=Anton&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <h1>A Fistful of Darkness<small id="sub">Листы персонажей и банды</small></h1>
+    <div class="share" id="share" hidden>
+      <input id="link" readonly aria-label="Ссылка на стол">
+      <button id="copy">Копировать ссылку</button>
+    </div>
+  </header>
+  <div class="banner" id="demo" hidden>Демо-режим: Firebase ещё не подключён, листы хранятся только в этом браузере. Впишите конфиг в js/config.js.</div>
+
+  <section class="hero" id="noroom" hidden>
+    <p class="note">Стол — это общая папка с листами. Создайте его один раз и отправьте ссылку игрокам: открыв её, они увидят все листы и смогут их править. Аккаунт не нужен.</p>
+    <button id="create">Создать стол</button>
+  </section>
+
+  <main id="room" hidden>
+    <h2>Банда</h2>
+    <div class="list" id="posse"></div>
+    <h2>Персонажи</h2>
+    <div class="list" id="pcs"></div>
+    <div class="new">
+      <select id="pb" aria-label="Плейбук"></select>
+      <button id="add">Новый персонаж</button>
+    </div>
+    <p class="note" style="margin-top:28px">Править может любой, у кого есть ссылка. Перед большими правками полезно сохранить лист кнопкой «Экспорт» на его странице.</p>
+  </main>
+</div>
+<script type="module" src="js/index.js"></script>
+</body>
+</html>
