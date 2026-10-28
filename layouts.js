@@ -4,11 +4,20 @@
 //   mode: tog (вкл/выкл), lvl (счётчик по индексу i), radio (значение i)
 // Поле: {k, x, t, w, h, fs}
 
+// Порядок как в PDF
 export const PLAYBOOKS = {
-  law:     { title: 'The Law',     img: 'law.webp' },
-  scout:   { title: 'The Scout',   img: 'scout.webp' },
-  speaker: { title: 'The Speaker', img: 'speaker.webp' },
-  gamble:  { title: 'The Gamble',  img: 'gamble.webp' },
+  fist:         { title: 'The Fist',          img: 'fist.webp' },
+  shot:         { title: 'The Shot',          img: 'shot.webp' },
+  law:          { title: 'The Law',           img: 'law.webp' },
+  gamble:       { title: 'The Gamble',        img: 'gamble.webp' },
+  scout:        { title: 'The Scout',         img: 'scout.webp' },
+  outlaw:       { title: 'The Outlaw',        img: 'outlaw.webp' },
+  thunderheart: { title: 'The Thunderheart',  img: 'thunderheart.webp' },
+  speaker:      { title: 'The Speaker',       img: 'speaker.webp' },
+  plan:         { title: 'The Plan',          img: 'plan.webp' },
+  gentle:       { title: 'The Gentle Touch',  img: 'gentle.webp' },
+  wrench:       { title: 'The Wrench & Saw',  img: 'wrench.webp' },
+  revenant:     { title: 'The Revenant',      img: 'revenant.webp' },
 };
 
 export const POSSE = { title: 'Bounty Hunters', img: 'bounty.webp' };
@@ -48,13 +57,28 @@ const LINES = [
 const GEAR = [[688,436],[737,436],[688,448],[771,448],[688,460],[688,472],[772,472],[785,472],[688,484],[700,484],[688,496],[688,508],[688,520],[735,520],
   [688,532],[688,544],[688,556],[700,556],[688,568],[759,568],[688,580],[700,580]];
 
-// Различия плейбуков, снятые с PDF: спецспособности (y кружков), ветеран, лишние квадратики у предметов плейбука
+// Различия плейбуков, снятые с PDF: спецспособности (y кружков), ветеран,
+// лишние квадратики у предметов плейбука, число строк контактов (fr)
 const DIFF = {
-  gamble:  { ab: [95.2,135.2,175.2,215.2,255.2,283.2,323.2], vet: 387.2, piExtra: [] },
-  law:     { ab: [95.2,135.2,187.2,227.2,267.2,307.2,347.2], vet: 387.2, piExtra: [[554.2,431.5,0],[554.2,443.5,1]] },
-  scout:   { ab: [95.2,135.2,175.2,215.2,243.2,283.2,311.2,351.2], vet: 391.2, piExtra: [[552.4,467.5,3]] },
-  speaker: { ab: [95.2,135.2,163.2,191.2,219.2,271.2,323.2], vet: 363.2, piExtra: [] },
+  fist:         { ab: [95.2,135.2,175.2,215.2,267.2,307.2,347.2], vet: 387.2, piExtra: [[554.2,443.5,1]] },
+  shot:         { ab: [95.2,147.2,199.2,251.2,279.2,307.2,347.2], vet: 387.2, piExtra: [[554.2,443.5,1]] },
+  law:          { ab: [95.2,135.2,187.2,227.2,267.2,307.2,347.2], vet: 387.2, piExtra: [[554.2,431.5,0],[554.2,443.5,1]] },
+  gamble:       { ab: [95.2,135.2,175.2,215.2,255.2,283.2,323.2], vet: 387.2, piExtra: [] },
+  scout:        { ab: [95.2,135.2,175.2,215.2,243.2,283.2,311.2,351.2], vet: 391.2, piExtra: [[552.4,467.5,3]] },
+  outlaw:       { ab: [95.2,135.2,163.2,203.2,243.2,283.2,335.2], vet: 387.2, piExtra: [[554.2,443.5,1]], fr: 6 },
+  thunderheart: { ab: [95.2,135.2,199.2,239.2,279.2,331.2,359.2], vet: 387.2, piExtra: [] },
+  speaker:      { ab: [95.2,135.2,163.2,191.2,219.2,271.2,323.2], vet: 363.2, piExtra: [] },
+  plan:         { ab: [95.2,159.2,199.2,227.2,267.2,319.2,359.2], vet: 387.2, piExtra: [], fr: 6 },
+  gentle:       { ab: [95.2,123.2,163.2,203.2,243.2,271.2,299.2,339.2], vet: 379.2, piExtra: [[554.2,455.5,2]] },
+  wrench:       { ab: [95.2,135.2,175.2,203.2,243.2,283.4,311.5,351.5], vet: 391.5, piExtra: [[554.2,443.5,1]] },
+  // Revenant: вместо Grit/Stigma — Passion/Decay, нет мутации и фишек-заначки, контакты и предметы вписываются вручную
+  revenant:     { ab: [95.2,135.2,163.2,203.2,243.2,283.2,347.2], vet: 387.2, piExtra: [], revenant: true },
 };
+
+const REVENANT_WORDS = [
+  ['st','Cold',288.8,310.9,206.2],['st','Obsessed',322.5,362.0,206.2],['st','Beheaded',288.8,329.8,215.2],['st','Chaotic',340.5,375.5,215.2],
+  ['st','Unstable',297.5,336.1,224.2],['st','Vicious',345.6,375.1,224.2],['st','Stinking',297.5,335.3,233.2],
+];
 
 function ringOrder(pts) {
   const cx = pts.reduce((a,p)=>a+p[0],0)/pts.length, cy = pts.reduce((a,p)=>a+p[1],0)/pts.length;
@@ -67,7 +91,8 @@ export function playbookLayout(pb) {
   const marks = [], fields = [];
   const m = (o) => marks.push(o);
 
-  Object.entries(HOLES).forEach(([k,pts]) => ringOrder(pts).forEach((p,i) =>
+  const R = !!D.revenant;
+  Object.entries(HOLES).filter(([k]) => !(R && k === 'mutation')).forEach(([k,pts]) => ringOrder(pts).forEach((p,i) =>
     m({k, i, mode:'lvl', kind:'fill', x:p[0], y:p[1], w:p[2]+0.4, h:p[2]+0.4})));
   Object.entries(ACTIONS).forEach(([a,pts]) => pts.forEach((p,i) =>
     m({k:'act_'+a, i, mode:'lvl', kind:'fill', x:p[0], y:p[1], w:9, h:9, tip:a})));
@@ -77,12 +102,12 @@ export function playbookLayout(pb) {
     m({k:'coin'+i+'t', mode:'tog', kind:'box', x:(a+b)/2, y:26, w:b-a-3, h:7.6});
     m({k:'coin'+i+'b', mode:'tog', kind:'box', x:(a+b)/2, y:35.6, w:b-a-3, h:7.6});
   });
-  [[700.6,10],[735,20],[768.8,30],[805.6,40]].forEach(([x,n]) => m({k:'stash'+n, mode:'tog', kind:'chip', x, y:62.5, w:31, h:31}));
-  WORDS.forEach(([g,w,a,b,base]) => m({k:g+'_'+w, mode:'tog', kind:'ring', x:(a+b)/2, y:base-3, w:b-a+3, h:9}));
+  if (!R) [[700.6,10],[735,20],[768.8,30],[805.6,40]].forEach(([x,n]) => m({k:'stash'+n, mode:'tog', kind:'chip', x, y:62.5, w:31, h:31}));
+  (R ? [...WORDS.filter(w => w[0] !== 'st'), ...REVENANT_WORDS] : WORDS).forEach(([g,w,a,b,base]) => m({k:g+'_'+w, mode:'tog', kind:'ring', x:(a+b)/2, y:base-3, w:b-a+3, h:9}));
   [[687,726],[728,779],[781,824]].forEach(([a,b],i) => m({k:'load', i, mode:'radio', kind:'ring', light:true, x:(a+b)/2, y:416.5, w:b-a+4, h:14}));
   D.ab.forEach((y,i) => m({k:'ab'+i, mode:'tog', kind:'fill', x:395.6, y, w:8, h:8}));
   [395.8,405.5,415.2].forEach((x,i) => m({k:'vet'+i, mode:'tog', kind:'fill', x, y:D.vet, w:8, h:8}));
-  [431.2,443.2,455.2,467.2,479.2].forEach((y,i) => {
+  [431.2,443.2,455.2,467.2,479.2,491.2].slice(0, D.fr || 5).forEach((y,i) => {
     m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:393, y, w:9.5, h:9.5, tip:'друг'});
     m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:403, y, w:9.5, h:9.5, tip:'соперник'});
   });
@@ -96,6 +121,10 @@ export function playbookLayout(pb) {
   [['harm3',33,271,215],['harm2a',33,289,113],['harm2b',150,289,98],['harm1a',33,307,113],['harm1b',150,307,98]]
     .forEach(([k,x,t,w]) => fields.push({k, x, t, w, h:14, fs:12}));
   fields.push({k:'veteran', x:403, t:D.vet+4.8, w:273, h:14, fs:11});
+  if (R) for (let i=0;i<5;i++) {
+    fields.push({k:'contact'+i, x:409.8, t:426.6+i*12, w:118.4, h:11.5, fs:9.5});
+    fields.push({k:'item'+i, x:548, t:426.8+i*12, w:128.2, h:11.5, fs:9.5});
+  }
 
   return { img: PLAYBOOKS[pb].img, marks, fields };
 }
