@@ -30,14 +30,14 @@ if (!room) {
   for (const [k, v] of Object.entries(PLAYBOOKS)) $('pb').append(el('option', { value: k, text: v.title }));
 
   const api = await openRoom(room);
-  const href = id => `sheet.html?room=${room}&id=${id}`;
+  const href = (id, pb) => `sheet.html?room=${room}&id=${id}` + (pb ? `&pb=${pb}` : '');
 
   api.watchSheets(sheets => {
     sheets = sheets || {};
     const posse = $('posse'); posse.textContent = '';
     const p = sheets.posse;
     posse.append(el('div', { class: 'row posse' },
-      el('div', {}, el('a', { class: 'name', href: href('posse'), text: p?.txt?.name || 'Банда без имени' }), el('div', { class: 'pb', text: POSSE.title })),
+      el('div', {}, el('a', { class: 'name', href: href('posse', 'posse'), text: p?.txt?.name || 'Банда без имени' }), el('div', { class: 'pb', text: POSSE.title })),
       el('div')));
 
     const pcs = $('pcs'); pcs.textContent = '';
@@ -53,7 +53,7 @@ if (!room) {
       };
       pcs.append(el('div', { class: 'row' },
         el('div', { style: 'min-width:0' },
-          el('a', { class: 'name', href: href(id), text: s.txt?.name || 'Без имени' }),
+          el('a', { class: 'name', href: href(id, s.playbook), text: s.txt?.name || 'Без имени' }),
           el('div', { class: 'pb', text: PLAYBOOKS[s.playbook]?.title || s.playbook })),
         el('div', { class: 'actions' }, del)));
     });
@@ -62,6 +62,6 @@ if (!room) {
   $('add').onclick = async () => {
     const id = newId(8), playbook = $('pb').value;
     await api.put(id, { kind: 'pc', playbook, txt: {}, s: {}, createdAt: Date.now() });
-    location.href = href(id);
+    location.href = href(id, playbook);
   };
 }

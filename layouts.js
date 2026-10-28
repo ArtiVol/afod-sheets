@@ -5,13 +5,13 @@
 // Поле: {k, x, t, w, h, fs}
 
 export const PLAYBOOKS = {
-  law:     { title: 'The Law',     img: 'law.jpg' },
-  scout:   { title: 'The Scout',   img: 'scout.jpg' },
-  speaker: { title: 'The Speaker', img: 'speaker.jpg' },
-  gamble:  { title: 'The Gamble',  img: 'gamble.jpg' },
+  law:     { title: 'The Law',     img: 'law.webp' },
+  scout:   { title: 'The Scout',   img: 'scout.webp' },
+  speaker: { title: 'The Speaker', img: 'speaker.webp' },
+  gamble:  { title: 'The Gamble',  img: 'gamble.webp' },
 };
 
-export const POSSE = { title: 'Bounty Hunters', img: 'bounty.jpg' };
+export const POSSE = { title: 'Bounty Hunters', img: 'bounty.webp' };
 
 // ---------- Плейбук: общая часть (перенесена из макета Claude Design) ----------
 

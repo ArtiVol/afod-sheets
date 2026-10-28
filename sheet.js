@@ -15,6 +15,13 @@ const markEls = [], fieldEls = new Map(), pending = new Map();
 function status(text, cls) { $('st').textContent = text; $('dot').className = 'dot ' + (cls || ''); }
 function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2200); }
 
+// Картинку листа начинаем грузить сразу, не дожидаясь Firebase
+{
+  const pb = new URLSearchParams(location.search).get('pb');
+  const src = pb === 'posse' ? POSSE.img : PLAYBOOKS[pb]?.img;
+  if (src) new Image().src = src;
+}
+
 if (!room || !/^[a-z0-9]{1,32}$/.test(id)) { status('В ссылке нет стола или листа', 'bad'); throw new Error('bad url'); }
 $('back').href = 'index.html?room=' + room;
 
