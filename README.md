@@ -19,7 +19,12 @@ needed. Changes appear on everyone's screen within a second.
 - `config.js` — Firebase project config; `database.rules.json` — database rules.
 
 The site is static and runs on GitHub Pages; sheet data lives in a Firebase Realtime Database
-(free Spark plan). Sheet art © its authors; this is a fan-made play aid.
+(free Spark plan).
+
+**Credits.** *A Fistful of Darkness* game and character sheets by
+[monkeyEcho](https://monkeyecho.itch.io/a-fistful-of-darkness). Based on
+[*Blades in the Dark*](https://bladesinthedark.com) by John Harper. This site is an unofficial,
+fan-made play aid.
 
 Add `&debug=1` to a sheet URL to outline every clickable area.
 
@@ -31,6 +36,9 @@ Add `&debug=1` to a sheet URL to outline every clickable area.
 
 **Стол** — общая папка с листами. Ведущий создаёт его один раз и отправляет ссылку игрокам.
 Править может любой, у кого есть ссылка, аккаунт не нужен. Правки видны всем через секунду.
+
+Игра и листы — [monkeyEcho](https://monkeyecho.itch.io/a-fistful-of-darkness), по мотивам
+[*Blades in the Dark*](https://bladesinthedark.com) Джона Харпера. Сайт — неофициальный фанатский помощник.
 
 ### Настройка Firebase (один раз)
 

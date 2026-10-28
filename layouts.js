@@ -123,14 +123,16 @@ export function playbookLayout(pb) {
     m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:393, y, w:9.5, h:9.5, tip:'friend'});
     m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:403, y, w:9.5, h:9.5, tip:'rival'});
   });
-  m({k:'armor', mode:'tog', kind:'box', x:293.4, y:305.8, w:6.6, h:6.6});
-  m({k:'sarmor', mode:'tog', kind:'box', x:293.4, y:317.8, w:6.6, h:6.6});
-  [431.5,443.5,455.5,467.5,479.5,491.5].forEach((y,i) => m({k:'pi'+i, mode:'tog', kind:'box', x:541.4, y, w:6.6, h:6.6}));
-  D.piExtra.forEach(([x,y,row]) => m({k:'pix'+row+'_'+Math.round(x), mode:'tog', kind:'box', x, y, w:6.6, h:6.6}));
-  GEAR.forEach(([x,b]) => m({k:'gi_'+x+'_'+b, mode:'tog', kind:'box', x:x+4, y:b-3.3, w:6.6, h:6.6}));
+  // Квадратики сверены с картинкой: сам квадрат на 0.3 pt выше центра глифа, размер 7.2 pt
+  m({k:'armor', mode:'tog', kind:'box', x:293.2, y:304.2, w:7.4, h:7.4});
+  m({k:'sarmor', mode:'tog', kind:'box', x:293.2, y:316.2, w:7.4, h:7.4});
+  [431.5,443.5,455.5,467.5,479.5,491.5].forEach((y,i) => m({k:'pi'+i, mode:'tog', kind:'box', x:541.3, y:y-0.3, w:7.4, h:7.4}));
+  D.piExtra.forEach(([x,y,row]) => m({k:'pix'+row+'_'+Math.round(x), mode:'tog', kind:'box', x:x-0.1, y:y-0.3, w:7.4, h:7.4}));
+  GEAR.forEach(([x,b]) => m({k:'gi_'+x+'_'+b, mode:'tog', kind:'box', x:x+3.8, y:b-3.6, w:7.4, h:7.4}));
 
   LINES.forEach(([k,x,b,w]) => fields.push({k, x, t:b-13, w, h:14, fs:12}));
-  [['harm3',33,271,215],['harm2a',33,289,113],['harm2b',150,289,98],['harm1a',33,307,113],['harm1b',150,307,98]]
+  // Строки ран центрированы по белым ячейкам на картинке
+  [['harm3',33,266,215],['harm2a',33,284.7,113],['harm2b',150,284.7,98],['harm1a',33,303.2,113],['harm1b',150,303.2,98]]
     .forEach(([k,x,t,w]) => fields.push({k, x, t, w, h:14, fs:12}));
   fields.push({k:'veteran', x:403, t:D.vet+4.8, w:273, h:14, fs:11});
   if (R) for (let i=0;i<5;i++) {
@@ -192,7 +194,11 @@ export function posseLayout(type) {
   }
 
   // Улучшения, логово, качество, тренировки
-  const box = (key, x, y, w=6.6) => m({k:key, mode:'tog', kind:'box', x, y, w, h:w});
+  // Квадратики сверены с картинкой: обычные (7.2 pt) сидят на 0.7 pt выше центра глифа, мелкие у когорт — на 0.5 pt
+  const box = (key, x, y, w=6.6) => {
+    const big = w >= 6.6, size = big ? 7.4 : w + 0.3;
+    m({k:key, mode:'tog', kind:'box', x, y: y - (big ? 0.7 : 0.5), w: size, h: size});
+  };
   [432.7,444.7,456.7,468.7,480.7].forEach((y,i) => box('up'+i, 540.3, y));
   box('up4b', 553.1, 480.7); box('up4c', 565.8, 480.7);
   [[692.1,443.9],[701.0,443.9],[765.8,443.9],[692.1,454.9],[765.8,454.9],[692.1,465.9],[765.8,465.9],

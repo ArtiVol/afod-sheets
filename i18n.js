@@ -24,6 +24,8 @@ const DICT = {
     replaceSheet: 'Заменить содержимое этого листа данными из файла?',
     loaded: 'Лист загружен из файла', badFile: 'Не удалось прочитать файл: это не JSON листа',
     posseSuffix: ' — банда', friend: 'друг', rival: 'соперник', langBtn: 'EN', langTitle: 'Switch to English',
+    creditGame: 'Игра и листы A Fistful of Darkness — автор', creditBase: 'Игра основана на', creditBy: 'Джона Харпера.',
+    creditFan: 'Это неофициальный фанатский помощник для игры.',
   },
   en: {
     subtitle: 'Character and posse sheets',
@@ -47,6 +49,8 @@ const DICT = {
     replaceSheet: 'Replace this sheet with the data from the file?',
     loaded: 'Sheet loaded from file', badFile: 'Could not read the file: it is not a sheet JSON',
     posseSuffix: ' — posse', friend: 'friend', rival: 'rival', langBtn: 'RU', langTitle: 'Переключить на русский',
+    creditGame: 'A Fistful of Darkness game and sheets by', creditBase: 'Based on', creditBy: 'by John Harper.',
+    creditFan: 'This is an unofficial, fan-made play aid.',
   },
 };
 

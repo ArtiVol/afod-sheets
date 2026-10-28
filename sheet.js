@@ -55,7 +55,7 @@ function build() {
 
   layout.marks.forEach(m => {
     const d = document.createElement('div');
-    d.className = 'mk';
+    d.className = 'mk' + (m.kind === 'tri' ? ' tri' : '');
     Object.assign(d.style, { left: (m.x - m.w / 2) * S + 'px', top: (m.y - m.h / 2) * S + 'px', width: m.w * S + 'px', height: m.h * S + 'px' });
     if (m.tip) d.title = (m.tip === 'friend' || m.tip === 'rival') ? t(m.tip) : m.tip;
     if (DEBUG) d.style.outline = '1px solid rgba(230,0,0,.8)';
@@ -82,6 +82,10 @@ function paintMark(m, d) {
     case 'ring': bd = `${1.4 * S}px solid ${on ? (m.light ? '#f3f1ea' : INK) : 'transparent'}`; break;
     case 'chip': bd = `${3 * S}px solid ${on ? INK : 'transparent'}`; bg = on ? 'rgba(0,0,0,.18)' : 'transparent'; break;
     case 'glyph': ch = on ? m.glyph : ''; bg = on ? 'rgba(255,255,255,.85)' : 'transparent'; r = '0'; st.fontSize = 9 * S + 'px'; break;
+    case 'tri':
+      bg = on ? INK : 'transparent'; r = '0';
+      st.clipPath = m.dir === 'up' ? 'polygon(50% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 100% 0, 50% 100%)';
+      d.classList.toggle('off', !on); break;
     case 'stamp': bg = on ? 'rgba(155,42,34,.55)' : 'transparent'; bd = on ? `${1.5 * S}px solid rgba(155,42,34,.95)` : '0'; r = '2px'; break;
   }
   st.background = bg; st.border = bd; st.borderRadius = r; d.textContent = ch;
