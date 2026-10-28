@@ -24,7 +24,7 @@ const DICT = {
     replaceSheet: 'Заменить содержимое этого листа данными из файла?',
     loaded: 'Лист загружен из файла', badFile: 'Не удалось прочитать файл: это не JSON листа',
     posseSuffix: ' — банда', friend: 'друг', rival: 'соперник', langBtn: 'EN', langTitle: 'Switch to English',
-    creditGame: 'Игра и листы A Fistful of Darkness — автор', creditBase: 'Игра основана на', creditBy: 'Джона Харпера.',
+    creditGame: 'A Fistful of Darkness разработана', creditBase: 'Игра основана на', creditBy: 'Джона Харпера.',
     creditFan: 'Это неофициальный фанатский помощник для игры.',
   },
   en: {

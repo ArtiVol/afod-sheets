@@ -37,8 +37,9 @@ Add `&debug=1` to a sheet URL to outline every clickable area.
 **Стол** — общая папка с листами. Ведущий создаёт его один раз и отправляет ссылку игрокам.
 Править может любой, у кого есть ссылка, аккаунт не нужен. Правки видны всем через секунду.
 
-Игра и листы — [monkeyEcho](https://monkeyecho.itch.io/a-fistful-of-darkness), по мотивам
-[*Blades in the Dark*](https://bladesinthedark.com) Джона Харпера. Сайт — неофициальный фанатский помощник.
+*A Fistful of Darkness* разработана [monkeyEcho](https://monkeyecho.itch.io/a-fistful-of-darkness).
+Игра основана на [*Blades in the Dark*](https://bladesinthedark.com) Джона Харпера.
+Это неофициальный фанатский помощник для игры.
 
 ### Настройка Firebase (один раз)
 

@@ -1,6 +1,6 @@
 // Разметка листов. Все координаты в пунктах PDF (страница 842×595), y сверху.
 // Метка: {k, x, y, w, h, kind, mode, i?, glyph?, tip?}
-//   kind: fill | box | ring | chip | bullet | glyph | stamp
+//   kind: fill | box | ring | chip | bullet | tri | stamp
 //   mode: tog (вкл/выкл), lvl (счётчик по индексу i), radio (значение i)
 // Поле: {k, x, t, w, h, fs}
 
@@ -120,8 +120,9 @@ export function playbookLayout(pb) {
   D.ab.forEach((y,i) => m({k:'ab'+i, mode:'tog', kind:'fill', x:395.6, y, w:8, h:8}));
   [395.8,405.5,415.2].forEach((x,i) => m({k:'vet'+i, mode:'tog', kind:'fill', x, y:D.vet, w:8, h:8}));
   [431.2,443.2,455.2,467.2,479.2,491.2].slice(0, D.fr || 5).forEach((y,i) => {
-    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:393, y, w:9.5, h:9.5, tip:'friend'});
-    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:403, y, w:9.5, h:9.5, tip:'rival'});
+    // Треугольники закрашиваются по форме напечатанных (сверено с картинкой)
+    m({k:'cf'+i, mode:'tog', kind:'tri', dir:'up', x:393.4, y:y-0.8, w:9, h:7.8, tip:'friend'});
+    m({k:'cr'+i, mode:'tog', kind:'tri', dir:'down', x:402.8, y:y-0.9, w:8.7, h:7.3, tip:'rival'});
   });
   // Квадратики сверены с картинкой: сам квадрат на 0.3 pt выше центра глифа, размер 7.2 pt
   m({k:'armor', mode:'tog', kind:'box', x:293.2, y:304.2, w:7.4, h:7.4});
@@ -189,8 +190,8 @@ export function posseLayout(type) {
 
   // Контакты: друг / соперник
   for (let i=0;i<6;i++) {
-    m({k:'cf'+i, mode:'tog', kind:'glyph', glyph:'▲', x:392.2, y:432.2+i*12, w:9.5, h:9.5, tip:'friend'});
-    m({k:'cr'+i, mode:'tog', kind:'glyph', glyph:'▼', x:402, y:432.2+i*12, w:9.5, h:9.5, tip:'rival'});
+    m({k:'cf'+i, mode:'tog', kind:'tri', dir:'up', x:392.3, y:431.9+i*12, w:8.9, h:7.9, tip:'friend'});
+    m({k:'cr'+i, mode:'tog', kind:'tri', dir:'down', x:402.3, y:431.7+i*12, w:8.7, h:7.5, tip:'rival'});
   }
 
   // Улучшения, логово, качество, тренировки
